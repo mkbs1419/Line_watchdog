@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tw">
+<!--
+//auth_fin.html?code=igqMbtZ3Kz1KAzKYf044oV&uname=tester
+-->
+
+<head>
+  <title>註冊完成</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script language="javascript" type="text/javascript">
+    var wsUri = "ws://localhost:1880/ws/text_message";
+    var output;
+
+    function init() {
+      output = document.getElementById("output");
+      testWebSocket();
+    }
+
+    function testWebSocket() {
+      websocket = new WebSocket(wsUri);
+      websocket.onopen = function(evt) {
+        onOpen(evt)
+      };
+
+      websocket.onclose = function(evt) {
+        onClose(evt)
+      };
+
+      websocket.onmessage = function(evt) {
+        onMessage(evt)
+      };
+
+      websocket.onerror = function(evt) {
+        onError(evt)
+      };
+    }
+
+    function onOpen(evt, aryPara) {
+      writeToScreen("CONNECTED");
+
+      var strUrl = location.search;
+      var getPara, ParaVal;
+      var aryPara = [];
+
+      if (strUrl.indexOf("?") != -1) {
+        var getSearch = strUrl.split("?");
+        getPara = getSearch[1].split("&");
+        for (i = 0; i < getPara.length; i++) {
+          ParaVal = getPara[i].split("=");
+          aryPara.push(ParaVal[0]);
+          aryPara[ParaVal[0]] = ParaVal[1];
+        }
+        //將資訊包成JSON送出
+        data = {
+          uname: aryPara.uname,
+          code: aryPara.code
+        };
+        console.log(data);
+        doSend(JSON.stringify(data));
+      }
+
+      document.getElementById("thx").innerHTML = "感謝您 " + aryPara.uname;
+    }
+
+    function onClose(evt) {
+      writeToScreen("DISCONNECTED");
+    }
+
+    function onMessage(evt) {
+      writeToScreen('<span style="color:blue;">RESPONSE:' + evt.data + '</span>');
+      websocket.close();
+    }
+
+    function onError(evt) {
+      writeToScreen('<span style="color:red;">ERROR:</span>' + evt.data);
+    }
+
+    function doSend(message) {
+      writeToScreen("SENT: " + message);
+      websocket.send(message);
+    }
+
+    function writeToScreen(message) {
+      var pre = document.createElement("p");
+      pre.style.wordWrap = "break-word";
+      pre.innerHTML = message;
+      output.appendChild(pre);
+    }
+
+    window.addEventListener("load", init, false);
+  </script>
+</head>
+
+<body>
+  <h2>註冊完成！</h2>
+  <p id=thx></p>
+  <div id="output"></div>
+</body>
+
+</html>

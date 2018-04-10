@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tw">
+<html>
+<!--
+//auth_half.html?code=igqMbtZ3Kz1KAzKYf044oV&state=abcde
+-->
+<head>
+  <title>只差一步</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script language="javascript" type="text/javascript">
+
+    function submit() {
+      console.log("submit");
+      var strUrl = location.search;
+      var getPara, ParaVal;
+      var aryPara = [];
+
+      if (strUrl.indexOf("?") != -1) {
+        var getSearch = strUrl.split("?");
+        getPara = getSearch[1].split("&");
+        for (i = 0; i < getPara.length; i++) {
+          ParaVal = getPara[i].split("=");
+          aryPara.push(ParaVal[0]);
+          aryPara[ParaVal[0]] = ParaVal[1];
+        }
+        console.log(aryPara);
+      }
+
+      var URL = 'http://localhost/line_watchdog/auth_fin.html?';
+      URL += 'code=' + aryPara.code;
+      URL += '&uname=' + document.getElementById("user_name").value;
+      window.location.href = URL;
+      console.log(URL);
+    }
+  </script>
+</head>
+
+<body>
+  <h2>只差一步</h2>
+  <input type="text" id="user_name" placeholder="使用者名稱"><br>
+  <p>請輸入使用者名稱，並點擊下面按鈕</p>
+  <button onclick="submit()"> 送出 </button>
+</body>
+
+</html>
